@@ -14,7 +14,7 @@ try:
 except socket.error as e:
 	print(str(e))
 
-print("[+] Connected.")
+# print("[+] Connected.")
 
 name = input("Enter your name")
 

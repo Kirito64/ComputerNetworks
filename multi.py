@@ -31,6 +31,8 @@ def ServerListner(cs):
 			msg = cs.recv(1024).decode()
 		except Exception as e:
 			print(f"[1] Error: {e}")
+			cs.close()
+			break
 			# clientSockets.remove(cs)
 		else:
 			if msg == disconectMessage:
@@ -39,7 +41,12 @@ def ServerListner(cs):
 
 			msg = msg.replace(seprator_token, ": ")
 		for client_socket in clientSockets:
+			try:
 				client_socket.send(msg.encode())
+			except socket.error as e:
+				client_socket.close()
+
+				clientSockets.remove(client_socket)
 	
 	clientSockets.remove(cs)
 
@@ -50,6 +57,8 @@ while True:
 	
 	clientSockets.add(cs)
 	print(f"Total active connections: {len(clientSockets)}")
+	welcome = f"Thanks for Connecting to the server {caddr}"
+	cs.send(welcome.encode())
 	t = Thread(target=ServerListner, args=(cs,))
 	t.daemon = True
 	t.start()
