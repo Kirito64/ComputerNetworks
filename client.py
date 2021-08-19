@@ -9,12 +9,11 @@ colors = [Fore.BLUE, Fore.CYAN, Fore.GREEN, Fore.LIGHTBLACK_EX,
     Fore.LIGHTBLUE_EX, Fore.LIGHTCYAN_EX, Fore.LIGHTGREEN_EX, 
     Fore.LIGHTMAGENTA_EX, Fore.LIGHTRED_EX, Fore.LIGHTWHITE_EX, 
     Fore.LIGHTYELLOW_EX, Fore.MAGENTA, Fore.RED, Fore.WHITE, Fore.YELLOW
-] 
+]
 
 client_color = random.choice(colors)
 
 clientSocket = socket.socket()
-
 connected = False
 
 def clientListener():
@@ -42,7 +41,8 @@ def serverConnect():
 	t.daemon = True
 	t.start()
 	name = input("Enter your name")
-	print("To quit type q")
+	clientSocket.send(name.encode())
+	print("To quit type q\ntype receiver username before typing message-username_\nfor multiple users use username1_username2_...\nFor sending to all users, type all_")
 	while True:
 		data = input()
 		if data.lower() == "q":

@@ -2,7 +2,6 @@ import socket
 import os
 from threading import *
 
-
 Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 host = "localhost"
@@ -12,6 +11,7 @@ seprator_token = "<NEP>"
 disconectMessage ="!DISCONNECT"
 threadCount = 0
 clientSockets = set()
+nameaccess={}
 
 Server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
@@ -30,7 +30,7 @@ def ServerListner(cs):
 		try:
 			msg = cs.recv(1024).decode()
 		except Exception as e:
-			print(f"[1] Error: {e}")
+			print(f"Error: {e}")
 			cs.close()
 			break
 			# clientSockets.remove(cs)
@@ -40,7 +40,35 @@ def ServerListner(cs):
 				break
 
 			msg = msg.replace(seprator_token, ": ")
-		for client_socket in clientSockets:
+			print(msg)
+			counter=0
+			finname=''
+			while msg[counter]!=':':
+				finname+=msg[counter]
+				counter+=1
+			counter+=2
+			namestr=''
+			while msg[counter]!=' ':
+			    namestr+=msg[counter]
+			    counter+=1
+			names=[]
+			temp=''
+			print(namestr)
+			msg2=''
+			while counter<len(msg):
+				msg2+=msg[counter]
+				counter+=1
+			for letter in namestr:
+			    if letter!='_':
+			        temp+=letter
+			    else:
+			        if temp=='all':
+			            names=clientSockets
+			            break
+			        names.append(nameaccess[temp])
+			        temp=''
+		msg=finname+': '+msg2
+		for client_socket in names:
 			try:
 				client_socket.send(msg.encode())
 			except socket.error as e:
@@ -59,6 +87,9 @@ while True:
 	print(f"Total active connections: {len(clientSockets)}")
 	welcome = f"Thanks for Connecting to the server {caddr}"
 	cs.send(welcome.encode())
+	usname = cs.recv(1024).decode()
+	print(usname)
+	nameaccess[usname]=cs
 	t = Thread(target=ServerListner, args=(cs,))
 	t.daemon = True
 	t.start()
@@ -68,5 +99,3 @@ for cs in clientSockets:
 	cs.close()
 
 Server.close()
-
-
