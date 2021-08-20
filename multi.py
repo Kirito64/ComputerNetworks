@@ -51,7 +51,7 @@ def ServerListner(cs):
 			while msg[counter]!=' ':
 			    namestr+=msg[counter]
 			    counter+=1
-			names=[]
+			names=[] 
 			temp=''
 			print(namestr)
 			msg2=''
@@ -65,17 +65,25 @@ def ServerListner(cs):
 			        if temp=='all':
 			            names=clientSockets
 			            break
+			        if temp not in nameaccess.keys():
+			            print('mentioned user not present')
+			            continue
 			        names.append(nameaccess[temp])
 			        temp=''
 		msg=finname+': '+msg2
+		if(len(names)==0):
+			names=clientSockets
+		
 		for client_socket in names:
-			try:
-				client_socket.send(msg.encode())
-			except socket.error as e:
-				client_socket.close()
-
-				clientSockets.remove(client_socket)
-	
+		    if client_socket not in clientSockets:
+		        print(f"{client_socket} has been terminated, can't send message")
+		        continue
+		    try:
+		        client_socket.send(msg.encode())
+		    except socket.error as e:
+		        client_socket.close()
+		        clientSockets.remove(client_socket)
+		        
 	clientSockets.remove(cs)
 
 
