@@ -48,9 +48,19 @@ def ServerListner(cs):
 				counter+=1
 			counter+=2
 			namestr=''
-			while msg[counter]!=' ':
-			    namestr+=msg[counter]
-			    counter+=1
+			counter2=0
+			underscorePresent=0
+			while counter2<len(msg):
+			    if msg[counter2]=='_':
+			        underscorePresent=1
+			        break
+			    counter2+=1
+			if underscorePresent==0:
+			    namestr="all"
+			else:
+			    while msg[counter]!=' ':
+			        namestr+=msg[counter]
+			        counter+=1
 			names=[] 
 			temp=''
 			print(namestr)
